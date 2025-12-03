@@ -202,19 +202,24 @@ button:active {
   font-size: 1rem;
 }
 
-.goal-input {
+.time-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.time-field {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 }
 
-.goal-input label {
+.time-field label {
   font-size: 0.7rem;
   opacity: 0.8;
 }
 
-.goal-input input {
-  width: 60px;
+.time-field input {
+  width: 50px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
@@ -244,8 +249,45 @@ button:active {
 .task-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.task-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  padding: 0.2rem 0.4rem;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.icon-btn.delete:hover {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff6b6b;
 }
 
 .progress-bar-bg {
@@ -268,4 +310,49 @@ button:active {
   text-align: center;
   opacity: 0.6;
   font-style: italic;
+}
+
+/* Editing Styles */
+.task-item.editing {
+  gap: 0.8rem;
+}
+
+.edit-name-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  color: white;
+  border-radius: 4px;
+}
+
+.edit-time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.edit-time-inputs input {
+  width: 50px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.4rem;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  background-color: #2a9d8f;
+}
+
+.cancel-btn {
+  background-color: #e63946;
 }
