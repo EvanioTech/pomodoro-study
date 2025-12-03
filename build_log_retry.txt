@@ -1,0 +1,30 @@
+
+> pomodoro-study@0.1.0 tauri
+> tauri build
+
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm run build`
+
+> pomodoro-study@0.1.0 build
+> tsc && vite build
+
+vite v7.2.6 building client environment for production...
+transforming...
+✓ 29 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.47 kB │ gzip:  0.30 kB
+dist/assets/index-DBfeyhQ-.css    4.49 kB │ gzip:  1.37 kB
+dist/assets/index-oUKtcxi6.js   200.43 kB │ gzip: 62.87 kB
+✓ built in 717ms
+   Compiling pomodoro-study v0.1.0 (/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri)
+    Finished `release` profile [optimized] target(s) in 18.25s
+       Built application at: /home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/pomodoro-study
+        Info Patching binary "/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/pomodoro-study" for type deb
+    Bundling pomodoro-study_0.1.0_amd64.deb (/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/bundle/deb/pomodoro-study_0.1.0_amd64.deb)
+        Info Patching binary "/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/pomodoro-study" for type rpm
+    Bundling pomodoro-study-0.1.0-1.x86_64.rpm (/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/bundle/rpm/pomodoro-study-0.1.0-1.x86_64.rpm)
+        Info Patching binary "/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/pomodoro-study" for type appimage
+    Bundling pomodoro-study_0.1.0_amd64.AppImage (/home/matiasdev/Documentos/tauri/pomodoro-study/src-tauri/target/release/bundle/appimage/pomodoro-study_0.1.0_amd64.AppImage)
+failed to bundle project `failed to run linuxdeploy`
+       Error failed to bundle project `failed to run linuxdeploy`
