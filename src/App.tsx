@@ -12,21 +12,38 @@ interface Task {
 }
 
 function App() {
+  // Load initial state from localStorage
+  const getInitialState = <T,>(key: string, defaultValue: T): T => {
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved state", e);
+      }
+    }
+    return defaultValue;
+  };
+
   // Configuration state (in minutes)
-  const [studyDuration, setStudyDuration] = useState(25);
-  const [breakDuration, setBreakDuration] = useState(5);
-  const [longBreakDuration, setLongBreakDuration] = useState(30);
+  const [studyDuration, setStudyDuration] = useState(() => getInitialState("pomodoro-studyDuration", 25));
+  const [breakDuration, setBreakDuration] = useState(() => getInitialState("pomodoro-breakDuration", 5));
+  const [longBreakDuration, setLongBreakDuration] = useState(() => getInitialState("pomodoro-longBreakDuration", 30));
 
   // Timer state
   const [mode, setMode] = useState<Mode>("study");
-  const [timeLeft, setTimeLeft] = useState(studyDuration * 60);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    // We can also persist timeLeft if desired, but let's default to studyDuration if not saved or if we want a fresh start on reload
+    // For now, let's just reset to studyDuration to avoid confusion if the user comes back days later
+    return getInitialState("pomodoro-studyDuration", 25) * 60;
+  });
   const [isActive, setIsActive] = useState(false);
-  const [sessionsCompleted, setSessionsCompleted] = useState(0);
+  const [sessionsCompleted, setSessionsCompleted] = useState(() => getInitialState("pomodoro-sessionsCompleted", 0));
 
   // Task state
   const [currentTab, setCurrentTab] = useState<Tab>("timer");
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
+  const [tasks, setTasks] = useState<Task[]>(() => getInitialState("pomodoro-tasks", []));
+  const [selectedTaskId, setSelectedTaskId] = useState<string>(() => getInitialState("pomodoro-selectedTaskId", ""));
 
   // New Task Input State
   const [newTaskName, setNewTaskName] = useState("");
@@ -39,6 +56,16 @@ function App() {
   const [editTaskHours, setEditTaskHours] = useState(0);
   const [editTaskMinutes, setEditTaskMinutes] = useState(0);
 
+  // Persistence Effects
+  useEffect(() => {
+    localStorage.setItem("pomodoro-studyDuration", JSON.stringify(studyDuration));
+    localStorage.setItem("pomodoro-breakDuration", JSON.stringify(breakDuration));
+    localStorage.setItem("pomodoro-longBreakDuration", JSON.stringify(longBreakDuration));
+    localStorage.setItem("pomodoro-sessionsCompleted", JSON.stringify(sessionsCompleted));
+    localStorage.setItem("pomodoro-tasks", JSON.stringify(tasks));
+    localStorage.setItem("pomodoro-selectedTaskId", JSON.stringify(selectedTaskId));
+  }, [studyDuration, breakDuration, longBreakDuration, sessionsCompleted, tasks, selectedTaskId]);
+
   // Ref to hold the interval id
   const intervalRef = useRef<number | null>(null);
 
@@ -49,21 +76,55 @@ function App() {
       if (!AudioContext) return;
 
       const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const now = ctx.currentTime;
 
-      osc.connect(gain);
+      // Create two oscillators to simulate two bells
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const modOsc = ctx.createOscillator();
+      const modGain = ctx.createGain();
+
+      // Bell frequencies (dissonant to sound like a mechanical alarm)
+      osc1.type = "square";
+      osc1.frequency.value = 800;
+
+      osc2.type = "square";
+      osc2.frequency.value = 840;
+
+      // Modulation (the "hammer" striking speed)
+      modOsc.type = "square";
+      modOsc.frequency.value = 20; // 20Hz ringing speed
+
+      // Connect modulation
+      modOsc.connect(modGain);
+      modGain.connect(gain.gain);
+
+      // Connect oscillators to main gain
+      osc1.connect(gain);
+      osc2.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5); // Drop to A4
+      // Set base gain (modulation will vary it)
+      // We need the gain to go from 0 to 1 rapidly
+      modGain.gain.value = 0.1; // Reduced depth of modulation
 
-      gain.gain.setValueAtTime(0.1, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      // Envelope
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.05, now + 0.1); // Reduced peak gain from 0.3 to 0.05
+      gain.gain.setValueAtTime(0.05, now + 1.5);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
 
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.5);
+      // Start everything
+      osc1.start(now);
+      osc2.start(now);
+      modOsc.start(now);
+
+      // Stop everything
+      osc1.stop(now + 2.0);
+      osc2.stop(now + 2.0);
+      modOsc.stop(now + 2.0);
+
     } catch (e) {
       console.error("Audio play failed", e);
     }
