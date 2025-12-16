@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-
 type Mode = "study" | "break";
 type Tab = "timer" | "tasks";
 
