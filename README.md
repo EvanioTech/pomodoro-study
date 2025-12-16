@@ -2,7 +2,7 @@
 
 O **Pomodoro Study App** é uma aplicação desktop moderna projetada para aumentar sua produtividade e foco. Combinando a técnica Pomodoro com um gerenciador de tarefas integrado, ele permite que você acompanhe seu tempo de estudo e gerencie suas metas diárias em uma interface elegante e minimalista.
 
-## 🚀 Funcionalidades
+## 🚀 Funcionalidades 
 
 ### ⏱️ Timer Pomodoro Inteligente
 *   **Ciclos Personalizáveis**: Configure a duração dos seus períodos de Foco, Pausa Curta e Pausa Longa.
